@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDoS Tool - Attack Logs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Attack Logs</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/attack">Start Attack</a></li>
+            <li><a href="/logs">View Logs</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2>Attack Statistics</h2>
+        <canvas id="attackChart" width="400" height="200"></canvas>
+        <script>
+            let attackChart = null; // Variable to store the chart instance
+        
+            const eventSource = new EventSource("/stream");
+            eventSource.onmessage = function(event) {
+                const logs = JSON.parse(event.data); // Parse the JSON data
+                console.log(logs); // Debug: Check the logs in the browser console
+        
+                if (logs && logs.length > 0) {
+                    const labels = logs.map(log => log.timestamp);
+                    const data = logs.map(log => log.intensity);
+        
+                    const ctx = document.getElementById('attackChart').getContext('2d');
+        
+                    // Destroy the existing chart if it exists
+                    if (attackChart) {
+                        attackChart.destroy();
+                    }
+        
+                    // Create a new chart
+                    attackChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Attack Intensity (requests/sec)',
+                                data: data,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.log("No logs found.");
+                    document.getElementById('attackChart').style.display = 'none';
+                    document.querySelector('.container').innerHTML += '<p>No logs found.</p>';
+                }
+            };
+        </script>
+        
+        <h2>Raw Logs</h2>
+        <pre>
+            {% for log in logs %}
+                {{ log }}
+            {% endfor %}
+        </pre>
+    </div>
+</body>
+</html>

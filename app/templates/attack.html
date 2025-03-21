@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDoS Tool - Start Attack</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Start DDoS Attack</h1>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/attack">Start Attack</a></li>
+            <li><a href="/logs">View Logs</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <form action="/attack" method="POST">
+            <label for="attack_type">Attack Type:</label>
+            <select name="attack_type" id="attack_type" required>
+                <option value="udp">UDP Flood</option>
+                <option value="syn">SYN Flood</option>
+                <option value="http">HTTP Flood</option>
+                <option value="icmp">ICMP Flood</option>
+                <option value="slowloris">Slowloris</option>
+                <option value="dns">DNS Amplification</option>
+            </select><br><br>
+
+            <label for="target_ip">Target IP:</label>
+            <input type="text" name="target_ip" id="target_ip" required><br><br>
+
+            <label for="target_port">Target Port:</label>
+            <input type="number" name="target_port" id="target_port" required><br><br>
+
+            <label for="duration">Duration (seconds):</label>
+            <input type="number" name="duration" id="duration" required><br><br>
+
+            <label for="intensity">Intensity (requests/sec):</label>
+            <input type="number" name="intensity" id="intensity" required><br><br>
+
+            <button type="submit">Start Attack</button>
+        </form>
+    </div>
+</body>
+</html>
