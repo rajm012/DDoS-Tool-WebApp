@@ -27,8 +27,8 @@
                 <option value="dns">DNS Amplification</option>
             </select><br><br>
 
-            <label for="target_ip">Target IP:</label>
-            <input type="text" name="target_ip" id="target_ip" required><br><br>
+            <label for="target_ips">Target IPs (comma-separated):</label>
+            <input type="text" name="target_ips" id="target_ips" required><br><br>
 
             <label for="target_port">Target Port:</label>
             <input type="number" name="target_port" id="target_port" required><br><br>
@@ -38,6 +38,15 @@
 
             <label for="intensity">Intensity (requests/sec):</label>
             <input type="number" name="intensity" id="intensity" required><br><br>
+
+            <label for="packet_size">Packet Size (bytes):</label>
+            <input type="number" name="packet_size" id="packet_size" value="1024"><br><br>
+
+            <label for="headers">Custom Headers (JSON):</label>
+            <textarea name="headers" id="headers"></textarea><br><br>
+
+            <label for="spoof_ip">Spoof Source IP:</label>
+            <input type="text" name="spoof_ip" id="spoof_ip"><br><br>
 
             <button type="submit">Start Attack</button>
         </form>
