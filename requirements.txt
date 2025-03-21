@@ -36,3 +36,4 @@ requests==2.26.0
 # tensorflow==2.13.0
 
 Flask-Limiter==3.12
+python-dotenv==1.0.1

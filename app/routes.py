@@ -4,12 +4,14 @@ import json
 from app import app
 import sqlite3
 import time
+# from app import limiter
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/attack', methods=['GET', 'POST'])
+# @limiter.limit("10 per minute")
 def attack():
     if request.method == 'POST':
         attack_type = request.form['attack_type']
@@ -35,10 +37,11 @@ def logs():
 
 @app.route('/stream')
 def stream():
-    def generate():
+    last_id = request.args.get('last_id', 0, type=int)
+    
+    def generate(last_id):
         conn = sqlite3.connect('config/attack_logs.db')
         c = conn.cursor()
-        last_id = request.args.get('last_id', 0, type=int)
         while True:
             c.execute("SELECT * FROM logs WHERE id > ?", (last_id,))
             logs = c.fetchall()
@@ -57,4 +60,6 @@ def stream():
                     last_id = log[0]
                 yield f"data: {json.dumps(logs_json)}\n\n"
             time.sleep(1)
-    return Response(generate(), mimetype='text/event-stream')
+    
+    return Response(generate(last_id), mimetype='text/event-stream')
+
