@@ -95,6 +95,21 @@ A powerful and ethical DDoS testing tool designed for security professionals and
 
 ---
 
+## Server Config 🌎
+
+For every tool we can make our own server and i used two of the prominent methods:
+
+1. Using inbuilt flask server as:
+   ```bash
+   python -m http.server 8000
+   ```
+
+2. Using the python script to make one server
+   
+   See the folder Servers where i have designed Snippet to get the various servers for testing. You can run that too to make a server on port 8000 and test it accoordingly.
+
+---
+
 ## Contributing 🤝
 
 We welcome contributions! Here’s how you can help:
