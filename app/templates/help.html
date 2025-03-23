@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDoS Tool - Help</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>DDoS Tool - Help</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/attack">Start Attack</a></li>
+            <li><a href="/logs">View Logs</a></li>
+            <li><a href="/help">Help</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/login">Login</a></li>
+                <li><a href="/signup">Signup</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    <div class="container">
+        <div class="content-box">
+            <h2>How to Use the DDoS Tool</h2>
+            <p>This guide will help you understand how to use the DDoS tool effectively. Below are explanations for each attack type and how to test them.</p>
+
+            <h3>UDP Flood</h3>
+            <p><strong>Description:</strong> This attack floods the target with UDP packets.</p>
+            <p><strong>Values to Input:</strong></p>
+            <ul class="help-list">
+                <li><strong>Target IPs:</strong> Enter the IP address(es) of the target(s).</li>
+                <li><strong>Target Port:</strong> Specify the port to attack.</li>
+                <li><strong>Duration:</strong> Set the duration of the attack in seconds.</li>
+                <li><strong>Intensity:</strong> Define the number of packets per second.</li>
+            </ul>
+            <p><strong>Testing:</strong> Use Wireshark to monitor UDP traffic or check the terminal for sent packets.</p>
+
+            <h3>SYN Flood</h3>
+            <p><strong>Description:</strong> This attack floods the target with SYN requests, overwhelming the target's connection queue.</p>
+            <p><strong>Values to Input:</strong></p>
+            <ul class="help-list">
+                <li><strong>Target IPs:</strong> Enter the IP address(es) of the target(s).</li>
+                <li><strong>Target Port:</strong> Specify the port to attack.</li>
+                <li><strong>Duration:</strong> Set the duration of the attack in seconds.</li>
+                <li><strong>Intensity:</strong> Define the number of SYN packets per second.</li>
+            </ul>
+            <p><strong>Testing:</strong> Use Wireshark to monitor SYN packets or check the terminal for sent packets.</p>
+
+            <h3>HTTP Flood</h3>
+            <p><strong>Description:</strong> This attack floods the target with HTTP requests, overwhelming the web server.</p>
+            <p><strong>Values to Input:</strong></p>
+            <ul class="help-list">
+                <li><strong>Target IPs:</strong> Enter the IP address(es) of the target(s).</li>
+                <li><strong>Target Port:</strong> Specify the port to attack (usually 80 or 443).</li>
+                <li><strong>Duration:</strong> Set the duration of the attack in seconds.</li>
+                <li><strong>Intensity:</strong> Define the number of HTTP requests per second.</li>
+            </ul>
+            <p><strong>Testing:</strong> Use Wireshark to monitor HTTP traffic or check the terminal for sent requests.</p>
+
+            <h3>ICMP Flood</h3>
+            <p><strong>Description:</strong> This attack floods the target with ICMP (ping) packets.</p>
+            <p><strong>Values to Input:</strong></p>
+            <ul class="help-list">
+                <li><strong>Target IPs:</strong> Enter the IP address(es) of the target(s).</li>
+                <li><strong>Duration:</strong> Set the duration of the attack in seconds.</li>
+                <li><strong>Intensity:</strong> Define the number of ICMP packets per second.</li>
+            </ul>
+            <p><strong>Testing:</strong> Use Wireshark to monitor ICMP traffic or check the terminal for sent packets.</p>
+
+            <h3>Slowloris</h3>
+            <p><strong>Description:</strong> This attack sends partial HTTP requests to keep connections open, exhausting the target's resources.</p>
+            <p><strong>Values to Input:</strong></p>
+            <ul class="help-list">
+                <li><strong>Target IPs:</strong> Enter the IP address(es) of the target(s).</li>
+                <li><strong>Target Port:</strong> Specify the port to attack (usually 80 or 443).</li>
+                <li><strong>Duration:</strong> Set the duration of the attack in seconds.</li>
+                <li><strong>Intensity:</strong> Define the number of concurrent connections.</li>
+            </ul>
+            <p><strong>Testing:</strong> Use Wireshark to monitor HTTP traffic or check the terminal for open connections.</p>
+
+            <h3>DNS Amplification</h3>
+            <p><strong>Description:</strong> This attack exploits DNS servers to flood the target with amplified traffic.</p>
+            <p><strong>Values to Input:</strong></p>
+            <ul class="help-list">
+                <li><strong>Target IPs:</strong> Enter the IP address(es) of the target(s).</li>
+                <li><strong>Duration:</strong> Set the duration of the attack in seconds.</li>
+                <li><strong>Intensity:</strong> Define the number of DNS queries per second.</li>
+            </ul>
+            <p><strong>Testing:</strong> Use Wireshark to monitor DNS traffic or check the terminal for sent queries.</p>
+
+            <h3>Viewing Output</h3>
+            <p>You can monitor the output of your attacks using the following tools:</p>
+            <ul class="help-list">
+                <li><strong>Terminal:</strong> Check the logs in the terminal where the tool is running.</li>
+                <li><strong>Wireshark:</strong> Use Wireshark to capture and analyze network traffic.</li>
+                <li><strong>Logs Page:</strong> View detailed logs on the <a href="/logs">Logs</a> page.</li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 DDoS Tool | Ethical Use Only</p>
+    </footer>
+    <a href="/" class="floating-help-button">🏚️</a>
+</body>
+</html>

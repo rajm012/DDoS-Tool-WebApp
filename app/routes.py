@@ -13,6 +13,9 @@ from app.database import add_user, get_user
 def index():
     return render_template('index.html')
 
+@app.route('/help')
+def help():
+    return render_template('help.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
