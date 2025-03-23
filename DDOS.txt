@@ -1,0 +1,17 @@
+So, My DDOS tool have the following features:
+
+1. It will be a flask webapp{flask + Chart.js can create a simple attack monitoring web interface}
+
+2. Will provide different types of attack option: (UDP Flood, SYN Flood, HTTP Flood, ICMP Flood, Sloworis Flood, DNS Amplification Attack)
+
+3. Will have multi-threading, Allow attacks on multiple IPs at once, Provide an option to set attack intensity.
+
+4. Logging and reporting system: {Record attack statistics in a log file or database:
+Time of attack, Packets sent per second, Target IP and Port, Attack duration}
+
+5. Customizable Attack Configuration: {Number of packets to send (packets/sec), Attack duration, Randomize packet size, Change request headers (for HTTP flood), Spoof source IPs (for advanced attacks), Store user preferences in a config file for better usability.}
+
+6. Botnet Simulation (Distributed Attack): {Multiple attack sources by using different IPs, If running on multiple machines in a local network, create slave scripts to execute attacks remotely (Use Sockets to send attack commands from a master script)}
+
+7. In future will try to implement using cloud services and use AI-DL in same
+
