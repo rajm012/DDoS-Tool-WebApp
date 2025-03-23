@@ -1,16 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, Response
 from app.utils import start_attack
 import json
-from app import app
+from app import app, limiter
 import sqlite3
 import time
-# from app import limiter
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Apply rate limiting to the attack route
 @app.route('/attack', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
 def attack():
     if request.method == 'POST':
         attack_type = request.form['attack_type']
@@ -18,9 +19,9 @@ def attack():
         target_port = int(request.form['target_port'])
         duration = int(request.form['duration'])
         intensity = int(request.form['intensity'])
-        packet_size = int(request.form.get('packet_size', 1024))  # Default packet size
-        headers = request.form.get('headers')  # Custom headers for HTTP flood
-        spoof_ip = request.form.get('spoof_ip')  # Spoof source IP
+        packet_size = int(request.form.get('packet_size', 1024))
+        headers = request.form.get('headers')
+        spoof_ip = request.form.get('spoof_ip')
 
         start_attack(attack_type, target_ips, target_port, duration, intensity, packet_size, headers, spoof_ip)
         return redirect(url_for('logs'))
