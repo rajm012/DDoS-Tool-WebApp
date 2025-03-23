@@ -13,10 +13,20 @@
             <li><a href="/">Home</a></li>
             <li><a href="/attack">Start Attack</a></li>
             <li><a href="/logs">View Logs</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a href="/logout">Logout</a></li>
+            {% else %}
+                <li><a href="/login">Login</a></li>
+                <li><a href="/signup">Signup</a></li>
+            {% endif %}
         </ul>
     </nav>
     <div class="container">
-        <p>Welcome to the DDoS Tool. Use the navigation above to start an attack or view logs.</p>
+        {% if current_user.is_authenticated %}
+            <p>Welcome, {{ current_user.id }}!</p>
+        {% else %}
+            <p>Please <a href="/login">login</a> or <a href="/signup">signup</a> to access the tool.</p>
+        {% endif %}
     </div>
 </body>
 </html>

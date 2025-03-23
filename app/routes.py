@@ -1,9 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, Response
+from flask import Flask, render_template, request, redirect, url_for, Response, flash
 from app.utils import start_attack
 import json
 from app import app, limiter
 import sqlite3
 import time
+from flask_login import login_user, logout_user, login_required, current_user
+from app.models import users, User, add_user
+
 
 @app.route('/')
 def index():
@@ -11,6 +14,7 @@ def index():
 
 # Apply rate limiting to the attack route
 @app.route('/attack', methods=['GET', 'POST'])
+@login_required
 @limiter.limit("5 per minute")
 def attack():
     if request.method == 'POST':
@@ -64,4 +68,40 @@ def stream():
             time.sleep(1)
     
     return Response(generate(last_id), mimetype='text/event-stream')
+
+# Login route
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username in users and users[username]["password"] == password:
+            user = User(username)
+            login_user(user)
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('index'))
+        flash('Invalid credentials', 'error')
+    return render_template('login.html')
+
+# Logout route
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logged out successfully!', 'success')
+    return redirect(url_for('index'))
+
+# Signup route
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username in users:
+            flash('Username already exists!', 'error')
+        else:
+            add_user(username, password)
+            flash('Account created successfully! Please log in.', 'success')
+            return redirect(url_for('login'))
+    return render_template('signup.html')
 
