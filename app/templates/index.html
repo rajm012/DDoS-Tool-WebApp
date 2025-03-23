@@ -23,7 +23,7 @@
     </nav>
     <div class="container">
         {% if current_user.is_authenticated %}
-            <p>Welcome, {{ current_user.id }}!</p>
+            <p>Welcome, {{ current_user.username }}!</p>
         {% else %}
             <p>Please <a href="/login">login</a> or <a href="/signup">signup</a> to access the tool.</p>
         {% endif %}

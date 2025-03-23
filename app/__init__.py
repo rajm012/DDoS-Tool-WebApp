@@ -1,31 +1,35 @@
 from flask import Flask, abort, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager
+from app.database import init_db, close_db, get_user
+from app.models import User
+
 
 # Create the Flask app
 app = Flask(__name__)
 app.secret_key="supersecretkey123"
 
+
+init_db()
+app.teardown_appcontext(close_db)
+
+
 # Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'  # Redirect to login page if unauthorized
+login_manager.login_view = 'login'
 
-# Dummy user model
-class User(UserMixin):
-    def __init__(self, id):
-        self.id = id
-
-# Dummy user database
-users = {"admin": {"password": "password"}}
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User(user_id)
+    user_data = get_user(user_id)
+    if user_data:
+        return User(user_data['id'], user_data['username'])
 
+    return None
 
-# Initialize Flask-Limiter
+# limiter to limit the access as for subscription 
 limiter = Limiter(
     app=app,
     key_func=get_remote_address,

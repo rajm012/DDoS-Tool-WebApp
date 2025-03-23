@@ -1,15 +1,14 @@
 from flask_login import UserMixin
+from app.database import get_user
 
-# Dummy user database (in-memory)
-users = {}
-
-# Dummy user model
 class User(UserMixin):
-    def __init__(self, id):
+    def __init__(self, id, username):
         self.id = id
+        self.username = username
 
-# Function to add a new user
-def add_user(username, password):
-    users[username] = {"password": password}
-
-    
+    @staticmethod
+    def get(user_id):
+        user_data = get_user(user_id)  # Fetch user data by user_id
+        if user_data:
+            return User(user_data['id'], user_data['username'])
+        return None

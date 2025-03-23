@@ -5,14 +5,58 @@ from app import app, limiter
 import sqlite3
 import time
 from flask_login import login_user, logout_user, login_required, current_user
-from app.models import users, User, add_user
+from app.models import User
+from app.database import add_user, get_user
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-# Apply rate limiting to the attack route
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if get_user(username):
+            flash('Username already exists!', 'error')
+
+        else:
+            if add_user(username, password):
+                flash('Account created successfully! Please log in.', 'success')
+                return redirect(url_for('login'))
+            else:
+                flash('An error occurred. Please try again.', 'error')
+    return render_template('signup.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user_data = get_user(username)
+
+        if user_data and user_data['password'] == password:
+            user = User(user_data['id'], user_data['username'])
+            login_user(user)  # Log the user in
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('index'))
+        flash('Invalid credentials', 'error')
+    return render_template('login.html')
+
+
+# Logout route
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Logged out successfully!', 'success')
+    return redirect(url_for('index'))
+
+
+# Protect routes
 @app.route('/attack', methods=['GET', 'POST'])
 @login_required
 @limiter.limit("5 per minute")
@@ -27,6 +71,7 @@ def attack():
         headers = request.form.get('headers')
         spoof_ip = request.form.get('spoof_ip')
 
+        # Start attack
         start_attack(attack_type, target_ips, target_port, duration, intensity, packet_size, headers, spoof_ip)
         return redirect(url_for('logs'))
     return render_template('attack.html')
@@ -40,6 +85,7 @@ def logs():
     logs = c.fetchall()
     conn.close()
     return render_template('logs.html', logs=logs)
+
 
 @app.route('/stream')
 def stream():
@@ -68,40 +114,4 @@ def stream():
             time.sleep(1)
     
     return Response(generate(last_id), mimetype='text/event-stream')
-
-# Login route
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if username in users and users[username]["password"] == password:
-            user = User(username)
-            login_user(user)
-            flash('Logged in successfully!', 'success')
-            return redirect(url_for('index'))
-        flash('Invalid credentials', 'error')
-    return render_template('login.html')
-
-# Logout route
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    flash('Logged out successfully!', 'success')
-    return redirect(url_for('index'))
-
-# Signup route
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if username in users:
-            flash('Username already exists!', 'error')
-        else:
-            add_user(username, password)
-            flash('Account created successfully! Please log in.', 'success')
-            return redirect(url_for('login'))
-    return render_template('signup.html')
 
